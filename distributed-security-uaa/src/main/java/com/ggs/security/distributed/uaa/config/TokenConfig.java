@@ -36,6 +36,8 @@ public class TokenConfig {
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
         jwtAccessTokenConverter.setSigningKey(SIGNING_KEY); //指定签名的密钥
+        //TODO 设置密钥对(RSA)
+//        jwtAccessTokenConverter.setKeyPair();
         return jwtAccessTokenConverter;
     }
 
