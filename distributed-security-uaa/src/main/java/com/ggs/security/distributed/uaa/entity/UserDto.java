@@ -1,5 +1,6 @@
 package com.ggs.security.distributed.uaa.entity;
 
+import com.google.gson.annotations.Expose;
 import lombok.Data;
 
 /**

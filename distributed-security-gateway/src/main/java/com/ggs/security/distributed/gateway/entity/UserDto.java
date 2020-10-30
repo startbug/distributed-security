@@ -1,8 +1,7 @@
-package com.ggs.security.distributed.order.entity;
+package com.ggs.security.distributed.gateway.entity;
 
 import com.google.gson.annotations.Expose;
 import lombok.Data;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  * @Author Starbug

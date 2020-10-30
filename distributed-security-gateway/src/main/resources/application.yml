@@ -10,12 +10,12 @@ server:
 logging:
   level:
     root: info
-    org.springframework: debug
+    org.springframework: info
 zuul:
   retryable: true
-  ignored-services: *
+  ignored-services: "*"
   add-host-header: true
-  sensitive-headers: *
+  sensitive-headers: "*"
   routes:
     uaa-service:
       stripPrefix: false
@@ -23,13 +23,16 @@ zuul:
     order-service:
       stripPrefix: false
       path: /order/**
+  host:
+    connect-timeout-millis: 100000
+    socket-timeout-millis: 200000
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:53000/eureka/
   instance:
     prefer-ip-address: true
-    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}}
 management:
   endpoints:
     web:
@@ -42,14 +45,17 @@ feign:
     request:
       enabled: true
       mime-types:
-        - text/xml
-        - application/xml
-        - application/json
+      - text/xml
+      - application/xml
+      - application/json
       min-request-size: 2048
     response:
       enabled: true
-
-
+  client:
+    config:
+      default:
+        connectTimeout: 60000
+        readTimeout: 60000
 
 
 

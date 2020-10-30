@@ -2,6 +2,7 @@ package com.ggs.security.distributed.gateway.filter;
 
 import com.ggs.security.distributed.gateway.common.EncryptUtil;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
@@ -38,6 +39,7 @@ public class AuthFilter extends ZuulFilter {
         return true;
     }
 
+    //GatewayServerConfig网关服务配置类中的内部类GatewayUAAServerConfig,会解析token放入到SpringSecurity的上下文中,直接取出来使用即可
     @Override
     public Object run() throws ZuulException {
         //1.获取令牌内容
@@ -53,7 +55,7 @@ public class AuthFilter extends ZuulFilter {
         OAuth2Authentication oauth2Authentication = (OAuth2Authentication) authentication;
         Authentication userAuthentication = oauth2Authentication.getUserAuthentication();
 
-//        Object principal = userAuthentication.getPrincipal();
+        Object principal = userAuthentication.getPrincipal();
 
         //2.组装明文token,转发给微服务,放入header,名称为json-token
         List<String> list = new ArrayList<>();
@@ -70,7 +72,7 @@ public class AuthFilter extends ZuulFilter {
         Map jsonToken = new HashMap(requestParameters);
 
         Gson gson = new Gson();
-        jsonToken.put("principal", userAuthentication.getName());
+        jsonToken.put("principal", principal);
         jsonToken.put("authorities", gson.toJson(list));
         ctx.addZuulRequestHeader("json-token", EncryptUtil.encodeUTF8StringBase64(gson.toJson(jsonToken)));
 

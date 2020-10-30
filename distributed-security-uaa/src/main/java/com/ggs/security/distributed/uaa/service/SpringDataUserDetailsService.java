@@ -3,6 +3,7 @@ package com.ggs.security.distributed.uaa.service;
 import com.ggs.security.distributed.uaa.dao.PermissionDao;
 import com.ggs.security.distributed.uaa.dao.UserDao;
 import com.ggs.security.distributed.uaa.entity.UserDto;
+import com.google.gson.Gson;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,15 +29,17 @@ public class SpringDataUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println("username = " + username);
-        UserDto user = userDao.findUserByName(username);
-        if (user == null) {
+        UserDto userDto = userDao.findUserByName(username);
+        if (userDto == null) {
             return null;
         }
-
-        List<String> permissionList = permissionDao.findPermissionByUserId(user.getId());
-
+        String credentials = userDto.getPassword();
+        userDto.setPassword(null);
+        Gson gson = new Gson();
+        String userJson = gson.toJson(userDto);
+        List<String> permissionList = permissionDao.findPermissionByUserId(userDto.getId());
 //        UserDetails userDetails = User.withUsername("zhangsan").password("$2a$10$D7nYjcZ77dxb/PWfJb.jOe5ak0lD33Rv/1zUm3vcMnUkqCOQvtKtK").authorities("p1").build();
-        User securityUser = new User(user.getUsername(), user.getPassword(), AuthorityUtils.createAuthorityList(permissionList.toArray(new String[permissionList.size()])));
+        User securityUser = new User(userJson, credentials, AuthorityUtils.createAuthorityList(permissionList.toArray(new String[permissionList.size()])));
 //        User securityUser = new User(user.getUsername(), user.getPassword(), AuthorityUtils.NO_AUTHORITIES);
         return securityUser;
     }

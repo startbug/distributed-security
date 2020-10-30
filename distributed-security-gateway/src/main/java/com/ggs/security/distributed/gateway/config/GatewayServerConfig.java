@@ -13,7 +13,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
  * @Date 2020/10/29 12:43
  */
 @Configuration
-public class GatewayResourceServerConfig {
+public class GatewayServerConfig {
 
     public static final String RESOURCE_ID = "res1";
 
@@ -69,7 +69,7 @@ public class GatewayResourceServerConfig {
         public void configure(HttpSecurity http) throws Exception {
             http
                 .authorizeRequests()
-                .antMatchers("/order/**").access("#oauth2.hasScope('ROLE_API')");
+                .antMatchers("/order/**").access("#oauth2.hasScope('ROLE_USER')");
         }
     }
 }
